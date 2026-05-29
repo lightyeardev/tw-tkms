@@ -1,6 +1,5 @@
 package com.transferwise.kafka.tkms.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.transferwise.common.baseutils.ExceptionUtils;
 import com.transferwise.kafka.tkms.api.ITkmsEventsListener;
 import com.transferwise.kafka.tkms.api.TkmsShardPartition;
@@ -14,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import tools.jackson.databind.ObjectMapper;
 
 public class TkmsRegisteredMessagesCollector implements ITkmsRegisteredMessagesCollector, ITkmsEventsListener {
 
@@ -26,7 +26,7 @@ public class TkmsRegisteredMessagesCollector implements ITkmsRegisteredMessagesC
 
   private AtomicInteger messagesCount = new AtomicInteger();
 
-  private boolean enabled = true;
+  private volatile boolean enabled = true;
 
   @Override
   public void messageRegistered(MessageRegisteredEvent event) {

@@ -49,7 +49,7 @@ public class TkmsMessage {
   /**
    * Kafka message's content/payload.
    */
-  @SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   @NotNull
   private byte[] value;
 

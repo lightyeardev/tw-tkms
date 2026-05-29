@@ -14,6 +14,8 @@ public interface ITransactionalKafkaMessageSender {
    */
   SendMessageResult sendMessage(TkmsMessage message);
 
+  SendMessageResult sendMessage(SendMessageRequest request);
+
   @Data
   @Accessors(chain = true)
   class SendMessageResult {
@@ -34,7 +36,6 @@ public interface ITransactionalKafkaMessageSender {
     private TkmsShardPartition shardPartition;
   }
 
-  SendMessageResult sendMessage(SendMessageRequest request);
 
   @Data
   @Accessors(chain = true)

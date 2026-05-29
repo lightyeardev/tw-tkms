@@ -33,6 +33,8 @@ dependencies {
     implementation libraries.micrometerCore
     implementation libraries.protobufJava
     implementation libraries.springBootStarter
+    implementation libraries.springBootFlyway
+    implementation libraries.springBootValidation
     implementation libraries.springJdbc
     implementation libraries.twBaseUtils
     implementation libraries.twContext
@@ -67,6 +69,7 @@ dependencies {
     testImplementation libraries.springBootStarterTest
     testImplementation libraries.springBootStarterWeb
     testImplementation libraries.springKafka
+    testRuntimeOnly libraries.springBootKafka
 
     testRuntimeOnly libraries.mariadbJavaClient
     testRuntimeOnly libraries.postgresql

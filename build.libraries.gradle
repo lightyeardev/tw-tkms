@@ -1,6 +1,6 @@
 ext {
     protobufVersion = "3.24.0"
-    springBootVersion = "${System.getenv("SPRING_BOOT_VERSION") ?: '3.4.6'}"
+    springBootVersion = "${System.getenv("SPRING_BOOT_VERSION") ?: '4.0.6'}"
     libraries = [
             // version defined
             awaitility                      : 'org.awaitility:awaitility:4.2.0',
@@ -11,7 +11,7 @@ ext {
             jakartaValidationApi            : 'jakarta.validation:jakarta.validation-api:3.0.2',
             javaxValidationApi              : "javax.validation:validation-api:2.0.1.Final",
             kafkaStreams                    : 'org.apache.kafka:kafka-streams:3.2.3',
-            lz4Java                         : 'org.lz4:lz4-java:1.8.0',
+            lz4Java                         : 'at.yawk.lz4:lz4-java:1.10.1',
             protobufJava                    : "com.google.protobuf:protobuf-java:${protobufVersion}",
             semver4j                        : "com.vdurmont:semver4j:3.1.0",
             snappyJava                      : 'org.xerial.snappy:snappy-java:1.1.10.5',
@@ -32,7 +32,7 @@ ext {
             flywayCore                      : 'org.flywaydb:flyway-core',
             flywayMysql                     : 'org.flywaydb:flyway-mysql',
             flywayPostgresql                : 'org.flywaydb:flyway-database-postgresql',
-            jacksonDatabind                 : 'com.fasterxml.jackson.core:jackson-databind',
+            jacksonDatabind                 : 'tools.jackson.core:jackson-databind',
             kafkaClients                    : 'org.apache.kafka:kafka-clients',
             lombok                          : 'org.projectlombok:lombok',
             mariadbJavaClient               : 'org.mariadb.jdbc:mariadb-java-client',
@@ -40,6 +40,9 @@ ext {
             micrometerRegistryPrometheus    : 'io.micrometer:micrometer-registry-prometheus',
             postgresql                      : 'org.postgresql:postgresql',
             springBootConfigurationProcessor: 'org.springframework.boot:spring-boot-configuration-processor',
+            springBootFlyway                : 'org.springframework.boot:spring-boot-flyway',
+            springBootKafka                 : 'org.springframework.boot:spring-boot-kafka',
+            springBootValidation            : 'org.springframework.boot:spring-boot-validation',
             springBootStarter               : 'org.springframework.boot:spring-boot-starter',
             springBootStarterActuator       : 'org.springframework.boot:spring-boot-starter-actuator',
             springBootStarterJdbc           : 'org.springframework.boot:spring-boot-starter-jdbc',

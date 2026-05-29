@@ -1,11 +1,11 @@
 package com.transferwise.kafka.tkms.api.helpers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.transferwise.common.baseutils.ExceptionUtils;
 import com.transferwise.kafka.tkms.api.TkmsMessage;
 import java.nio.charset.StandardCharsets;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import tools.jackson.databind.ObjectMapper;
 
 public class TkmsMessageFactory implements ITkmsMessageFactory {
 
