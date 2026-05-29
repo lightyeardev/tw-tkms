@@ -3,7 +3,7 @@ plugins {
     id 'idea'
     id "com.google.protobuf"
     id "docker-compose"
-    id 'com.github.johnrengelman.shadow'
+    id 'com.gradleup.shadow'
     id 'maven-publish'
     id 'signing'
 }
@@ -114,11 +114,7 @@ test {
  */
 shadowJar {
     dependencies {
-        dependencies {
-            exclude(dependency {
-                it.moduleName != 'protobuf-java'
-            })
-        }
+        include { it.moduleName == 'protobuf-java' }
     }
     manifest {
         attributes 'Implementation-Version': "$project.version"
