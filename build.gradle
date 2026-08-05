@@ -4,7 +4,6 @@ import org.eclipse.jgit.api.errors.RefAlreadyExistsException
 
 buildscript {
     repositories {
-        google()
         mavenCentral()
     }
     if (!project.hasProperty("springBootVersion")) {

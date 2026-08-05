@@ -23,6 +23,13 @@ dependencies {
     compileOnly libraries.springBootConfigurationProcessor
     compileOnly libraries.javaxValidationApi
     compileOnly libraries.jakartaValidationApi
+    /*
+     Only needed to reference `FlywayAutoConfiguration`/`ValidationAutoConfiguration` in `@AutoConfigureAfter`, which Spring resolves from bytecode
+     metadata and tolerates being absent. Keeping them off the runtime classpath avoids dragging `flyway-core` into every service, which would
+     activate Flyway's auto-configuration in services that do not use Flyway.
+    */
+    compileOnly libraries.springBootFlyway
+    compileOnly libraries.springBootValidation
 
     implementation libraries.caffeine
     implementation libraries.commonsLang3
@@ -33,8 +40,6 @@ dependencies {
     implementation libraries.micrometerCore
     implementation libraries.protobufJava
     implementation libraries.springBootStarter
-    implementation libraries.springBootFlyway
-    implementation libraries.springBootValidation
     implementation libraries.springJdbc
     implementation libraries.twBaseUtils
     implementation libraries.twContext
@@ -63,6 +68,8 @@ dependencies {
     }
     testImplementation libraries.flywayMysql
     testImplementation libraries.flywayCore
+    // The test application drives migrations itself via `FlywayMigrationStrategy`.
+    testImplementation libraries.springBootFlyway
     testImplementation libraries.lombok
     testImplementation libraries.springBootStarterActuator
     testImplementation libraries.springBootStarterJdbc

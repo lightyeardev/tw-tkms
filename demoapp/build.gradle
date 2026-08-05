@@ -20,6 +20,7 @@ dependencies {
     implementation libraries.guava
     implementation libraries.kafkaStreams
     implementation libraries.protobufJava
+    implementation libraries.springBootFlyway
     implementation libraries.springBootStarterActuator
     implementation libraries.springBootStarterJdbc
     implementation libraries.springBootStarterWeb
