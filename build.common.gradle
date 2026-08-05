@@ -107,6 +107,14 @@ compileTestJava {
     }
 }
 
+checkstyle {
+    /*
+      Pin the tool the same way SpotBugs is pinned. Left unset it follows the Gradle version's default, so a Gradle upgrade silently changes which
+      rules are enforced -- that is how the Gradle 9 bump started requiring the `sendMessage` overloads to be declared next to each other.
+    */
+    toolVersion = '10.24.0'
+}
+
 tasks.withType(Checkstyle) {
     config = resources.text.fromFile(file('../google_checks.xml'))
 
