@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.awaitility.Awaitility.await;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.transferwise.common.baseutils.ExceptionUtils;
 import com.transferwise.common.baseutils.UuidUtils;
 import com.transferwise.common.baseutils.transactionsmanagement.ITransactionsHelper;
@@ -49,6 +48,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import tools.jackson.databind.ObjectMapper;
 
 @BaseTestEnvironment
 @Slf4j

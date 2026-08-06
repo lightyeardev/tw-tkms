@@ -3,7 +3,7 @@ plugins {
     id 'idea'
     id "com.google.protobuf"
     id "docker-compose"
-    id 'com.github.johnrengelman.shadow'
+    id 'com.gradleup.shadow'
     id 'maven-publish'
     id 'signing'
 }
@@ -23,6 +23,13 @@ dependencies {
     compileOnly libraries.springBootConfigurationProcessor
     compileOnly libraries.javaxValidationApi
     compileOnly libraries.jakartaValidationApi
+    /*
+     Only needed to reference `FlywayAutoConfiguration`/`ValidationAutoConfiguration` in `@AutoConfigureAfter`, which Spring resolves from bytecode
+     metadata and tolerates being absent. Keeping them off the runtime classpath avoids dragging `flyway-core` into every service, which would
+     activate Flyway's auto-configuration in services that do not use Flyway.
+    */
+    compileOnly libraries.springBootFlyway
+    compileOnly libraries.springBootValidation
 
     implementation libraries.caffeine
     implementation libraries.commonsLang3
@@ -61,12 +68,15 @@ dependencies {
     }
     testImplementation libraries.flywayMysql
     testImplementation libraries.flywayCore
+    // The test application drives migrations itself via `FlywayMigrationStrategy`.
+    testImplementation libraries.springBootFlyway
     testImplementation libraries.lombok
     testImplementation libraries.springBootStarterActuator
     testImplementation libraries.springBootStarterJdbc
     testImplementation libraries.springBootStarterTest
     testImplementation libraries.springBootStarterWeb
     testImplementation libraries.springKafka
+    testRuntimeOnly libraries.springBootKafka
 
     testRuntimeOnly libraries.mariadbJavaClient
     testRuntimeOnly libraries.postgresql
@@ -114,11 +124,7 @@ test {
  */
 shadowJar {
     dependencies {
-        dependencies {
-            exclude(dependency {
-                it.moduleName != 'protobuf-java'
-            })
-        }
+        include { it.moduleName == 'protobuf-java' }
     }
     manifest {
         attributes 'Implementation-Version': "$project.version"

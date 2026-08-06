@@ -18,8 +18,7 @@ jobs:
       max-parallel: 100
       matrix:
         spring_boot_version:
-          - 3.4.6
-          - 3.5.0
+          - 4.0.6
     env:
       SPRING_BOOT_VERSION: ${{ matrix.spring_boot_version }}
       GRADLE_OPTS: "-Djava.security.egd=file:/dev/./urandom -Dorg.gradle.parallel=true"
@@ -52,29 +51,35 @@ jobs:
           ALLOW_ANONYMOUS_LOGIN: "yes"
           JVMFLAGS: "-Xmx512m -Xms64m"
       kafka1:
-        image: wurstmeister/kafka:2.12-2.2.0
+        image: bitnamilegacy/kafka:3.6.0
         env:
-          KAFKA_BROKER_ID: 1
-          KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181/kafka1
-          KAFKA_LISTENERS: PLAINTEXT://:9092
-          KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-          KAFKA_MESSAGE_MAX_BYTES: "10485760"
-          KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS: 20000
-          KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: "true"
-          KAFKA_LEADER_IMBALANCE_CHECK_INTERVAL_SECONDS: 5
-          KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+          ALLOW_PLAINTEXT_LISTENER: "yes"
+          KAFKA_CFG_BROKER_ID: 1
+          KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper1:2181/kafka1
+          KAFKA_CFG_LISTENERS: PLAINTEXT://:9092
+          KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092
+          KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+          KAFKA_CFG_MESSAGE_MAX_BYTES: "10485760"
+          KAFKA_CFG_ZOOKEEPER_SESSION_TIMEOUT_MS: 20000
+          KAFKA_CFG_UNCLEAN_LEADER_ELECTION_ENABLE: "true"
+          KAFKA_CFG_LEADER_IMBALANCE_CHECK_INTERVAL_SECONDS: 5
+          KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "false"
+          KAFKA_HEAP_OPTS: -Xms256m -Xmx768m
       kafka2:
-        image: wurstmeister/kafka:2.12-2.2.0
+        image: bitnamilegacy/kafka:3.6.0
         env:
-          KAFKA_BROKER_ID: 1
-          KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181/kafka2
-          KAFKA_LISTENERS: PLAINTEXT://:9092
-          KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-          KAFKA_MESSAGE_MAX_BYTES: "10485760"
-          KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS: 20000
-          KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: "true"
-          KAFKA_LEADER_IMBALANCE_CHECK_INTERVAL_SECONDS: 5
-          KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+          ALLOW_PLAINTEXT_LISTENER: "yes"
+          KAFKA_CFG_BROKER_ID: 1
+          KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper1:2181/kafka2
+          KAFKA_CFG_LISTENERS: PLAINTEXT://:9092
+          KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9092
+          KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+          KAFKA_CFG_MESSAGE_MAX_BYTES: "10485760"
+          KAFKA_CFG_ZOOKEEPER_SESSION_TIMEOUT_MS: 20000
+          KAFKA_CFG_UNCLEAN_LEADER_ELECTION_ENABLE: "true"
+          KAFKA_CFG_LEADER_IMBALANCE_CHECK_INTERVAL_SECONDS: 5
+          KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "false"
+          KAFKA_HEAP_OPTS: -Xms256m -Xmx768m
     steps:
       - name: "Install packages"
         # We do some changes as the main ubuntu repo is currently very slow.
@@ -85,7 +90,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 8.5
+          gradle-version: 9.5.1
           gradle-home-cache-cleanup: true
           # Comment out when you are upgrading gradle in a branch and doing tons of commits you would need to test.
           # cache-read-only: false
@@ -164,7 +169,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 8.5
+          gradle-version: 9.5.1
           gradle-home-cache-cleanup: true
           # Comment out when you are upgrading gradle in a branch and doing tons of commits you would need to test.
           # cache-read-only: false

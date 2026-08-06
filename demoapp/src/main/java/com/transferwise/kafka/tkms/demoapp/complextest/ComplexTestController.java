@@ -1,6 +1,5 @@
 package com.transferwise.kafka.tkms.demoapp.complextest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.transferwise.kafka.tkms.api.ITransactionalKafkaMessageSender;
 import com.transferwise.kafka.tkms.api.ITransactionalKafkaMessageSender.SendMessageResult;
 import com.transferwise.kafka.tkms.api.TkmsMessage;
@@ -10,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tools.jackson.databind.ObjectMapper;
 
 @RestController
 public class ComplexTestController {

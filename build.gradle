@@ -3,8 +3,11 @@ import com.github.spotbugs.snom.Effort
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException
 
 buildscript {
+    repositories {
+        mavenCentral()
+    }
     if (!project.hasProperty("springBootVersion")) {
-        ext.springBootVersion = System.getenv("SPRING_BOOT_VERSION") ?: "3.4.6"
+        ext.springBootVersion = System.getenv("SPRING_BOOT_VERSION") ?: "4.0.6"
     }
     dependencies {
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.9.4'
@@ -15,11 +18,11 @@ buildscript {
 plugins {
     id 'idea'
     id 'org.springframework.boot' version "$springBootVersion" apply false
-    id "com.github.spotbugs" version "6.0.2"
+    id "com.github.spotbugs" version "6.5.5"
     id "at.zierler.yamlvalidator" version "1.5.0"
     id 'org.ajoberstar.grgit' version '5.2.1'
     id 'io.github.gradle-nexus.publish-plugin' version "1.3.0"
-    id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
+    id 'com.gradleup.shadow' version '9.4.2' apply false
 }
 
 idea.project {
@@ -29,6 +32,7 @@ idea.project {
 }
 
 spotbugs {
+    toolVersion = '4.9.8'
     effort = Effort.valueOf('MAX')
     reportLevel = Confidence.valueOf('DEFAULT')
 }

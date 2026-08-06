@@ -2,7 +2,6 @@ package com.transferwise.kafka.tkms.test;
 
 import com.transferwise.common.baseutils.ExceptionUtils;
 import com.transferwise.kafka.tkms.test.TestProperties.KafkaServer;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +28,6 @@ public class KafkaConfiguration implements InitializingBean {
   @Autowired
   private TestProperties tkmsProperties;
 
-  @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
   @Override
   public void afterPropertiesSet() {
     for (var kafkaServer : tkmsProperties.getKafkaServers()) {
@@ -73,6 +71,7 @@ public class KafkaConfiguration implements InitializingBean {
         final CreateTopicsResult createTopicsResult = adminClient.createTopics(Collections.singleton(newTopic));
         createTopicsResult.values().get(topicName).get();
         log.info("Created Kafka topic '" + topicName + "' in " + i + ".");
+        awaitTopicMetadataPropagated(adminClient, topicName, partitions);
         return;
       } catch (InterruptedException | ExecutionException e) {
         if (!(e.getCause() instanceof TopicExistsException)) {
@@ -81,6 +80,31 @@ public class KafkaConfiguration implements InitializingBean {
         ExceptionUtils.doUnchecked(() -> Thread.sleep(5));
       }
     }
+  }
+
+  /**
+   * `createTopics` acknowledges as soon as the topic is created in the controller, but partition leadership is not necessarily propagated to all
+   * brokers yet. TKMS validates topics via the producer's metadata at startup, which fails if it queries before propagation completes. Wait until the
+   * topic is fully describable with a leader for every partition, so topic validation does not flake under load.
+   */
+  protected void awaitTopicMetadataPropagated(final AdminClient adminClient, final String topicName, final int partitions) {
+    for (int i = 0; i < 100; i++) {
+      try {
+        var description = adminClient.describeTopics(Collections.singleton(topicName)).allTopicNames().get().get(topicName);
+        boolean ready = description != null
+            && description.partitions().size() == partitions
+            && description.partitions().stream().allMatch(p -> p.leader() != null && p.leader().id() >= 0);
+        if (ready) {
+          return;
+        }
+      } catch (InterruptedException | ExecutionException e) {
+        if (!(e.getCause() instanceof UnknownTopicOrPartitionException)) {
+          throw new RuntimeException(e.getMessage(), e);
+        }
+      }
+      ExceptionUtils.doUnchecked(() -> Thread.sleep(50));
+    }
+    throw new IllegalStateException("Topic '" + topicName + "' metadata did not propagate in time.");
   }
 
 }

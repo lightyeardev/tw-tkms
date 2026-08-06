@@ -74,19 +74,25 @@ dependencies {
     compileOnly libraries.spotbugsAnnotations
 }
 
+ext.javaTargetVersion = (springBootVersion.startsWith("3.") || springBootVersion.startsWith("4.")) ? 17 : 11
+
 java {
-    if (springBootVersion.startsWith("3.")) {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    } else {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
+    sourceCompatibility = JavaVersion.toVersion(javaTargetVersion)
+    targetCompatibility = JavaVersion.toVersion(javaTargetVersion)
     withSourcesJar()
     withJavadocJar()
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+        vendor = JvmVendorSpec.ADOPTIUM
+    }
 }
 
 compileJava {
+    /*
+      We compile with a JDK 25 toolchain but publish for older runtimes, so use `--release` instead of only `-source`/`-target`. Otherwise javac
+      happily links against JDK 25 APIs that do not exist on the runtime we claim to support, and it only fails for the consumer.
+    */
+    options.release = javaTargetVersion
     options.encoding = 'utf-8'
     options.compilerArgs << '-parameters'
     options.compilerArgs << '-Xlint'
@@ -99,6 +105,14 @@ compileTestJava {
     javaCompiler = javaToolchains.compilerFor {
         languageVersion = JavaLanguageVersion.of(17)
     }
+}
+
+checkstyle {
+    /*
+      Pin the tool the same way SpotBugs is pinned. Left unset it follows the Gradle version's default, so a Gradle upgrade silently changes which
+      rules are enforced -- that is how the Gradle 9 bump started requiring the `sendMessage` overloads to be declared next to each other.
+    */
+    toolVersion = '10.24.0'
 }
 
 tasks.withType(Checkstyle) {

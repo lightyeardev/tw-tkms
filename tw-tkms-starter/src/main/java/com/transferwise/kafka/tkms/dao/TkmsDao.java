@@ -9,7 +9,6 @@ import com.transferwise.kafka.tkms.api.TkmsMessage;
 import com.transferwise.kafka.tkms.api.TkmsShardPartition;
 import com.transferwise.kafka.tkms.config.TkmsProperties;
 import com.transferwise.kafka.tkms.metrics.ITkmsMetricsTemplate;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -195,7 +194,6 @@ public abstract class TkmsDao implements ITkmsDao, InitializingBean {
     return ExceptionUtils.doUnchecked(() -> messageSerializer.serialize(shardPartition, message));
   }
 
-  @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
   protected long keyToLong(KeyHolder keyHolder) {
     return keyHolder.getKey().longValue();
   }
