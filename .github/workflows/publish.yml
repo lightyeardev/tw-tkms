@@ -1,0 +1,47 @@
+name: "Publish"
+
+# Manual on purpose. The version comes from `gradle.properties` and GitHub Packages rejects re-publishing an
+# existing release version with a 409, so publishing on every master push would fail every time after the first.
+# Tag pushes are not a usable trigger either: tags pushed by `tagRelease` use GITHUB_TOKEN, and GitHub does not
+# fire workflows for those. So: bump the version, merge it, then run this workflow against master.
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: "Publish to GitHub Packages"
+    runs-on:
+      - ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    container:
+      image: azul/zulu-openjdk:17
+    env:
+      SPRING_BOOT_VERSION: 4.0.6
+      GRADLE_OPTS: "-Djava.security.egd=file:/dev/./urandom -Dorg.gradle.parallel=true"
+      MAVEN_URL: "https://maven.pkg.github.com/${{ github.repository }}"
+      MAVEN_USER: ${{ github.actor }}
+      MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: "Install packages"
+        # We do some changes as the main ubuntu repo is currently very slow.
+        run: |
+          apt-get update && apt-get install -y git unzip
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 9.5.1
+          gradle-home-cache-cleanup: true
+      - name: "Report what is about to be published"
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: properties --property version --console=plain
+      # Publishes tw-tkms-starter and tw-tkms-test-starter. Deliberately not `publish`, which would also try
+      # `publishAllPublicationsToSonatypeRepository` and fail on the missing SONATYPE_* credentials.
+      - name: "Publish to GitHub Packages"
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: publishAllPublicationsToMavenRepository --console=plain --stacktrace
